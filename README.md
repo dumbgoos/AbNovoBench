@@ -64,6 +64,13 @@ This repository currently supports benchmarking the following tools:
 - **Casanovo:** [https://github.com/Noble-Lab/casanovo]
 - **pi-HelixNovo:** [https://github.com/PHOENIXcenter/pi-HelixNovo]
 - **ContraNovo:** [https://github.com/BEAM-Labs/ContraNovo]
+- **InstaNovo:** [https://github.com/instadeepai/InstaNovo]
+- **GraphNovo:** [https://github.com/AmadeusloveIris/GraphNovo]
+- **AdaNovo:** [https://github.com/Westlake-OmicsAI/adanovo_v1]
+- **NovoB:** [https://github.com/ProteomeTeam/NovoB]
+- **PointNovo:** [https://github.com/irleader/PointNovo]
+- **PGPointNovo:** [https://github.com/shallFun4Learning/PGPointNovo]
+- **DeepNovo:** [https://github.com/nh2tran/DeepNovo]
 
 ---
 
