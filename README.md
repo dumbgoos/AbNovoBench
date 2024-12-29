@@ -60,18 +60,6 @@ Mass spectrometry-based de novo sequencing is a critical method for understandin
 
 ---
 
-## 📂 **Data**
-
-### Input Format:
-- Raw MS data (.mzML, .raw)
-- Peptide sequences (if available) for ground truth comparison.
-
-### Dataset Description:
-- Available under the `data/` directory.
-- Contains both real-world and simulated MS data for antibodies.
-
----
-
 ## 🛡 **Benchmarked Tools**
 
 This repository currently supports benchmarking the following tools:
