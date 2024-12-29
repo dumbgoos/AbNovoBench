@@ -48,7 +48,7 @@ Mass spectrometry-based de novo sequencing is a critical method for understandin
 
 ## 🚀 **Usage**
 
-1. Prepare your MS data in the required format (see [Data](#data)).
+1. Prepare your MS data in the required format.
 2. Run the benchmarking pipeline:
    ```bash
    python benchmark.py --input /path/to/data --tools tool1,tool2 --output /path/to/results
