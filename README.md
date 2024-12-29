@@ -4,9 +4,6 @@ Welcome to the **Antibody Mass Spectrometry De Novo Benchmark** repository! This
 
 ![De Novo Sequencing](https://img.shields.io/badge/De%20Novo-Sequencing-blue)
 ![Mass Spectrometry](https://img.shields.io/badge/Mass%20Spectrometry-Proteomics-green)
-![License](https://img.shields.io/github/license/dumbgoos/AbNovoBench)
-![Last Updated](https://img.shields.io/github/last-commit/dumbgoos/AbNovoBench)
-
 ---
 
 ## 📝 **TODO**
