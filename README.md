@@ -73,6 +73,7 @@ This repository currently supports benchmarking the following tools:
 - **DeepNovo:** [https://github.com/nh2tran/DeepNovo]
 - **Spectralis:** [https://github.com/gagneurlab/spectralis]
 - **pNovo:** [http://pfind.org/software/pNovo/index.html]
+- **PepNet:** [https://github.com/lkytal/pepnet]
 
 ---
 
