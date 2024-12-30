@@ -72,6 +72,7 @@ This repository currently supports benchmarking the following tools:
 - **PGPointNovo:** [https://github.com/shallFun4Learning/PGPointNovo]
 - **DeepNovo:** [https://github.com/nh2tran/DeepNovo]
 - **Spectralis:** [https://github.com/gagneurlab/spectralis]
+- **pNovo:** [http://pfind.org/software/pNovo/index.html]
 
 ---
 
