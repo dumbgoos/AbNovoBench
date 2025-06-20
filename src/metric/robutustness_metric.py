@@ -1,0 +1,313 @@
+"""
+Description:
+    This script processes mass spectrometry (MS) data to calculate fragment ion information
+    and noise factors. It replaces the slower np.isclose-based matching with a faster
+    KDTree-based matching algorithm (using SciPy's cKDTree) to efficiently locate m/z values
+    within a specified tolerance. The script leverages multiprocessing for parallel processing
+    of spectra and uses tqdm to display a progress bar during execution.
+
+Algorithms and Techniques:
+    - KDTree-based nearest neighbor search for fast ion matching.
+    - Multiprocessing (Pool) to parallelize the processing of spectra.
+
+Author: Ling Luo
+Date: 2025-02-26
+"""
+
+import re
+import logging
+from multiprocessing import Pool
+
+import numpy as np
+import pandas as pd
+from pyteomics import mgf, mass
+from scipy.spatial import cKDTree
+from tqdm import tqdm
+
+# Configure logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+
+# Matching tolerance in Da
+match_mass_tol = 0.1
+
+# Mass values
+mass_H = 1.0078
+mass_H2O = 18.0106
+mass_NH3 = 17.0265
+mass_N_terminus = 1.0078
+mass_C_terminus = 17.0027
+mass_CO = 27.9949
+mass_Phosphorylation = 79.96633
+
+# Amino acid masses
+mass_AA = {
+    "_PAD": 0.0,
+    "_GO": mass_N_terminus - mass_H,
+    "_EOS": mass_C_terminus + mass_H,
+    "A": 71.03711,
+    "R": 156.10111,
+    "N": 114.04293,
+    "n": 115.02695,
+    "D": 115.02694,
+    "C": 160.03065,
+    "E": 129.04259,
+    "Q": 128.05858,
+    "q": 129.0426,
+    "G": 57.02146,
+    "H": 137.05891,
+    "I": 113.08406,
+    "L": 113.08406,
+    "K": 128.09496,
+    "M": 131.04049,
+    "m": 147.0354,
+    "F": 147.06841,
+    "P": 97.05276,
+    "S": 87.03203,
+    "T": 101.04768,
+    "W": 186.07931,
+    "Y": 163.06333,
+    "V": 99.06841,
+}
+
+
+def extract_modified_amino_acids(peptide_sequence):
+    """
+    Extracts modified amino acids from a peptide sequence.
+    Returns a list of (position, modified_string).
+    """
+    matches = re.finditer(r'[A-Za-z]\([^)]+\)', peptide_sequence)
+    return [(m.start(), m.group()) for m in matches]
+
+
+def split_peptide_sequence(peptide_sequence):
+    """
+    Splits a peptide sequence into individual amino acids,
+    accounting for modifications.
+    """
+    amino_acids = re.findall(r'[A-Z][a-z]*', peptide_sequence)
+    mods = extract_modified_amino_acids(peptide_sequence)
+    offset = 0
+    for pos, mod in mods:
+        idx = pos - offset
+        amino_acids[idx] = mod
+        offset += len(mod) - 1
+    return amino_acids
+
+
+def modification_replacer(sequence):
+    """
+    Replaces specific modifications with standardized single-letter codes.
+    """
+    seq_list = split_peptide_sequence(sequence)
+    result = []
+    for item in seq_list:
+        item = (item.replace("C(+57.02)", "C")
+                    .replace("M(+15.99)", "m")
+                    .replace("N(+.98)", "n")
+                    .replace("Q(+.98)", "q"))
+        result.append(item)
+    return ''.join(result)
+
+
+def fragments(peptide, types=('b', 'a', 'y')):
+    """
+    Generates theoretical m/z values for fragments:
+    a, b, y ions with +1 and +2 charges and losses (H2O, NH3).
+    Returns (a_ions, b_ions, y_ions) lists.
+    """
+    a_ions, b_ions, y_ions = [], [], []
+
+    length = len(peptide)
+    for i in range(1, length):
+        for ion_type in types:
+            if ion_type[0] == 'b':
+                b_types = []
+                base = mass.fast_mass(peptide[:i], ion_type=ion_type, charge=1, aa_mass=mass_AA)
+                b_types.extend([
+                    base,
+                    mass.fast_mass(peptide[:i], ion_type=ion_type, charge=2, aa_mass=mass_AA),
+                    base - mass.calculate_mass(formula='H2O', charge=1),
+                    base - mass.calculate_mass(formula='NH3', charge=1),
+                ])
+                b_ions.append(b_types)
+
+            elif ion_type[0] == 'a':
+                a_types = []
+                base = mass.fast_mass(peptide[:i], ion_type=ion_type, charge=1, aa_mass=mass_AA)
+                a_types.extend([
+                    base,
+                    mass.fast_mass(peptide[:i], ion_type=ion_type, charge=2, aa_mass=mass_AA),
+                    base - mass.calculate_mass(formula='H2O', charge=1),
+                    base - mass.calculate_mass(formula='NH3', charge=1),
+                ])
+                a_ions.append(a_types)
+
+            else:  # y ions
+                y_types = []
+                base = mass.fast_mass(peptide[i:], ion_type=ion_type, charge=1, aa_mass=mass_AA)
+                y_types.extend([
+                    base,
+                    mass.fast_mass(peptide[i:], ion_type=ion_type, charge=2, aa_mass=mass_AA),
+                    base - mass.calculate_mass(formula='H2O', charge=1),
+                    base - mass.calculate_mass(formula='NH3', charge=1),
+                ])
+                y_ions.append(y_types)
+
+    return a_ions, b_ions, y_ions
+
+
+def process_spectrum(args):
+    """
+    Processes a single spectrum using KDTree for fast m/z matching.
+    Returns missing/ present cleavage counts and modified intensity array.
+    """
+    spectrum, peptide, tol = args
+    if isinstance(peptide, float):
+        return (np.nan, np.nan, np.nan, np.nan, spectrum['intensity array'])
+
+    a_ions, b_ions, y_ions = fragments(peptide)
+    missing, present = 0, []
+    missing_a, present_a = 0, []
+
+    mz_arr = spectrum['m/z array']
+    int_arr = spectrum['intensity array'].copy()
+    tree = cKDTree(mz_arr.reshape(-1, 1))
+
+    # Evaluate cleavages
+    for idx, (a_f, b_f, y_f) in enumerate(zip(a_ions, b_ions, reversed(y_ions)), start=1):
+        found_b = any(tree.query_ball_point(val, tol) for val in b_f)
+        found_y = any(tree.query_ball_point(val, tol) for val in y_f)
+        found_a = any(tree.query_ball_point(val, tol) for val in a_f)
+
+        if found_b or found_y:
+            present.append(idx)
+        else:
+            missing += 1
+
+        if found_a or found_b or found_y:
+            present_a.append(idx)
+        else:
+            missing_a += 1
+
+    # Mask matched fragment peaks
+    for frag_list in list(b_ions) + list(reversed(y_ions)):
+        for val in frag_list:
+            for i in tree.query_ball_point(val, tol):
+                int_arr[i] = np.nan
+
+    return peptide, missing, present, missing_a, present_a, int_arr
+
+
+def noise_and_fragmentIons(mgf_in_path, seq_all_modified=None):
+    """
+    Processes MGF to compute missing cleavages and returns summary DataFrame
+    and median noise intensity.
+    """
+    df = pd.DataFrame()
+    tasks = []
+    with mgf.read(mgf_in_path) as spectra:
+        for spec, pep in zip(spectra, seq_all_modified):
+            tasks.append((spec, pep, match_mass_tol))
+
+    results = []
+    with Pool() as pool:
+        for res in tqdm(pool.imap(process_spectrum, tasks),
+                        total=len(tasks), desc="Processing Spectra"):
+            results.append(res)
+
+    noise_vals = []
+    rows = []
+    for peptide, miss, pres, miss_a, pres_a, mod_int in results:
+        noise_vals.extend(mod_int.tolist())
+        rows.append({
+            "Modified Sequence": peptide,
+            "Number of missing cleavages": miss,
+            "Position of present cleavages": pres,
+            "Number of missing cleavages (including a-ions)": miss_a,
+            "Position of present cleavages (including a-ions)": pres_a,
+        })
+
+    df = pd.DataFrame(rows)
+    median_noise = np.nanmedian(noise_vals)
+    logger.info(f"Median noise intensity: {median_noise}")
+    logger.info(f"Median missing cleavages: {df['Number of missing cleavages'].median()}")
+
+    return df, median_noise
+
+
+def noise_factor(df, mgf_in_path, median_noise):
+    """
+    Adds noise factor metrics to DataFrame: noise factor,
+    counts of noise and fragment peaks.
+    """
+    noise_factors = []
+    counts_noise = []
+    counts_frag = []
+
+    with mgf.read(mgf_in_path) as spectra:
+        specs = list(spectra)
+        if len(specs) != len(df):
+            logger.error("MGF and summary lengths differ.")
+            return df
+
+        for spec, pep in tqdm(zip(specs, df["Modified Sequence"]),
+                              total=len(specs), desc="Processing Noise"):
+            int_arr = spec['intensity array'].copy()
+            tree = cKDTree(spec['m/z array'].reshape(-1, 1))
+            frag_count = 0
+            noise_count = 0
+
+            if not isinstance(pep, float):
+                a_ions, b_ions, y_ions = fragments(pep)
+
+                # Mask fragment peaks
+                for frag_group in list(b_ions) + list(reversed(y_ions)):
+                    for val in frag_group:
+                        inds = tree.query_ball_point(val, match_mass_tol)
+                        frag_count += len(inds)
+                        for i in inds:
+                            int_arr[i] = np.nan
+
+                # Count noise peaks
+                for intensity in int_arr:
+                    if intensity >= median_noise:
+                        noise_count += 1
+
+                nf = (noise_count / frag_count) if frag_count else noise_count
+            else:
+                nf = np.nan
+
+            noise_factors.append(nf)
+            counts_noise.append(noise_count)
+            counts_frag.append(frag_count)
+
+    df["Noise factor"] = noise_factors
+    df["Number of noise peaks"] = counts_noise
+    df["Number of fragment peaks"] = counts_frag
+
+    total_peaks = np.nansum(counts_noise) + np.nansum(counts_frag)
+    noise_pct = np.nansum(counts_noise) / total_peaks if total_peaks else 0
+    logger.info(f"{noise_pct*100:.2f}% of all peaks are noise")
+    logger.info(f"Average noise factor: {np.nanmean(noise_factors)}")
+
+    return df
+
+
+if __name__ == "__main__":
+    mgf_in_path = "/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/DB_search_merged.mgf"
+    csv_in_path = "/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/DB_search_merged.csv"
+    csv_out_path = "/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/robutustness_metric.csv"
+
+    df_in = pd.read_csv(csv_in_path)
+    seqs = df_in['Modified Sequence'].tolist()
+
+    df_summary, med_noise = noise_and_fragmentIons(mgf_in_path, seq_all_modified=seqs)
+    logger.info(f"Median noise intensity: {med_noise}")
+
+    df_final = noise_factor(df_summary, mgf_in_path, med_noise)
+    df_final.to_csv(csv_out_path, index=False)
+    logger.info(f"Robustness metrics written to: {csv_out_path}")
