@@ -16,6 +16,7 @@ Date: 2025-02-26
 
 import re
 import logging
+import argparse
 from multiprocessing import Pool
 
 import numpy as np
@@ -298,16 +299,27 @@ def noise_factor(df, mgf_in_path, median_noise):
 
 
 if __name__ == "__main__":
-    mgf_in_path = "/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/DB_search_merged.mgf"
-    csv_in_path = "/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/DB_search_merged.csv"
-    csv_out_path = "/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/robutustness_metric.csv"
+    parser = argparse.ArgumentParser(
+        description="Compute noise and fragment ion metrics from an MGF file.")
+    parser.add_argument(
+        "--mgf-in", "-m", required=True,
+        help="Path to the input MGF file.")
+    parser.add_argument(
+        "--csv-in", "-i", required=True,
+        help="Path to the CSV file with 'Modified Sequence' column.")
+    parser.add_argument(
+        "--csv-out", "-o", required=True,
+        help="Path where the output CSV summary will be written.")
+    args = parser.parse_args()
 
-    df_in = pd.read_csv(csv_in_path)
+    # Read sequences from the provided CSV
+    df_in = pd.read_csv(args.csv_in)
     seqs = df_in['Modified Sequence'].tolist()
 
-    df_summary, med_noise = noise_and_fragmentIons(mgf_in_path, seq_all_modified=seqs)
+    # Run processing
+    df_summary, med_noise = noise_and_fragmentIons(args.mgf_in, seq_all_modified=seqs)
     logger.info(f"Median noise intensity: {med_noise}")
 
-    df_final = noise_factor(df_summary, mgf_in_path, med_noise)
-    df_final.to_csv(csv_out_path, index=False)
-    logger.info(f"Robustness metrics written to: {csv_out_path}")
+    df_final = noise_factor(df_summary, args.mgf_in, med_noise)
+    df_final.to_csv(args.csv_out, index=False)
+    logger.info(f"Robustness metrics written to: {args.csv_out}")

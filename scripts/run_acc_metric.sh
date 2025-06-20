@@ -2,10 +2,10 @@
 set -euo pipefail
 
 # Path to the Python evaluation script
-EVAL_SCRIPT="/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/acc_metric.py"
+EVAL_SCRIPT="./131Ab_hcd_denovo/acc_metric.py"
 
 # Root directory containing enzyme_results subfolders
-ROOT_DIR="/mnt/data/luoling/benchmark_docker/131Ab_hcd_denovo/enzyme_results"
+ROOT_DIR="./131Ab_hcd_denovo/enzyme_results"
 
 # Iterate over every .csv file except any acc_metric.csv or all_results.csv
 find "$ROOT_DIR" -type f -name '*.csv' \
