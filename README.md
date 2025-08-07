@@ -6,12 +6,6 @@ Welcome to the **Antibody Mass Spectrometry De Novo Benchmark** repository! This
 ![Mass Spectrometry](https://img.shields.io/badge/Mass%20Spectrometry-Proteomics-green)
 ---
 
-## 📝 **TODO**
-
-- [x] Upload the environment yml file of the supported denovo method
-- [ ] Release Docker
-- [ ] Release benchmark pipeline
-
 ---
 
 ## 🌟 **Introduction**
@@ -71,7 +65,6 @@ This repository currently supports benchmarking the following tools:
 - **PointNovo:** [https://github.com/irleader/PointNovo]
 - **PGPointNovo:** [https://github.com/shallFun4Learning/PGPointNovo]
 - **DeepNovo:** [https://github.com/nh2tran/DeepNovo]
-- **Spectralis:** [https://github.com/gagneurlab/spectralis]
 - **pNovo:** [http://pfind.org/software/pNovo/index.html]
 - **PepNet:** [https://github.com/lkytal/pepnet]
 - **SMSNet:** [https://github.com/cmb-chula/SMSNet]
@@ -94,13 +87,11 @@ We welcome contributions! To contribute:
 If you use this repository in your work, please cite it as follows:
 
 ```
-@misc{antibody_ms_benchmark,
-  author = {Wenbin Jiang, Ling Luo},
-  title = {Antibody Mass Spectrometry De Novo Benchmark},
-  year = {2024},
-  publisher = {GitHub},
-  journal = {GitHub Repository},
-  howpublished = {\url{https://github.com/dumbgoos/AbNovoBench}},
+@misc{jiang2025abnovobench,
+  title        = {AbNovoBench: A Comprehensive, Standardized, and Reliable Benchmarking System for Evaluating Monoclonal Antibody De Novo Sequencing Analysis},
+  author       = {Wenbin Jiang and Ling Luo and Lihong Huang and Jin Xiao and Zihan Lin and Yijie Qiu and Jiying Wang and Ouyang Hu and Sainan Zhang and Mengsha Tong and Ningshao Xia and Yueting Xiong and Quan Yuan and Rongshan Yu},
+  year         = {2025},
+  howpublished = {https://github.com/dumbgoos/AbNovoBench}
 }
 ```
 
