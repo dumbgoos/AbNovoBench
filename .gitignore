@@ -1,4 +1,3 @@
-# Mac OS 系统临时文件
 .DS_Store
 .DS_Store?
 ._*
@@ -7,19 +6,15 @@
 ehthumbs.db
 Thumbs.db
 
-# Mac OS 系统文件夹属性文件
 .AppleDouble
 .LSOverride
 
-# Mac OS 图标文件
 Icon?
 
-# Mac OS 系统文件
 .DocumentRevisions-V100
 .fseventsd
 .TemporaryItems
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Mac OS iCloud 临时文件
 *.icloud 
