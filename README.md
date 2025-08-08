@@ -12,7 +12,7 @@ Welcome to the **Antibody Mass Spectrometry De Novo Benchmark** repository! This
 
 Mass spectrometry-based de novo sequencing is a critical method for understanding antibody structures and functionalities. This repository provides:
 
-- A curated dataset for benchmarking.
+- The first and largest high-quality dataset specifically designed for antibodies to date, meticulously developed in-house.
 - Scripts and pipelines to compare multiple de novo sequencing tools.
 - Visualized results for evaluating tool performance.
 
