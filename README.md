@@ -1,6 +1,6 @@
 # 🧬 **Antibody Mass Spectrometry De Novo Benchmark**
 
-Welcome to the **Antibody Mass Spectrometry De Novo Benchmark** repository! This project aims to evaluate and benchmark de novo sequencing tools specifically for antibody mass spectrometry (MS) data analysis. 
+Welcome to the **Antibody Mass Spectrometry De Novo Benchmark** repository! This project aims to benchmark de novo sequencing tools specifically for antibody mass spectrometry (MS) data analysis. 
 
 ![De Novo Sequencing](https://img.shields.io/badge/De%20Novo-Sequencing-blue)
 ![Mass Spectrometry](https://img.shields.io/badge/Mass%20Spectrometry-Proteomics-green)
