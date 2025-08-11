@@ -99,6 +99,6 @@ If you use this repository in your work, please cite it as follows:
 
 ## 📜 **License**
 
-This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute this repository as per the license terms.
+This project is licensed under the [Apache License](LICENSE). Feel free to use, modify, and distribute this repository as per the license terms.
 
 
