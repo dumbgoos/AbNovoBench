@@ -18,3 +18,6 @@ Icon?
 .com.apple.timemachine.donotpresent
 
 *.icloud 
+
+__pycache__/
+*.py[cod]
