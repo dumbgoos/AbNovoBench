@@ -1,0 +1,140 @@
+# ALPS Fusion Configuration File
+# This file contains all default parameters for ALPS Fusion assembly processing
+# 
+# Note: All file paths are relative to the project root directory (/path/to/AbNovoBench)
+# Users should modify these paths according to their specific environment setup
+
+# Supported tool names
+tool_names:
+  - CasanovoV1
+  - CasanovoV2
+  - PepNet
+  - pNovo3
+  - pi-HelixNovo
+  - pi-PrimeNovo
+  - AdaNovo
+  - ContraNovo
+  - DeepNovo
+  - InstaNovo
+  - PointNovo
+  - PGPointNovo
+  - SMSNet
+
+# Default antibody name mapping (directory name -> sample name)
+default_names:
+  "50ugmAb1": "mAb1"
+  "100ugmAb2": "mAb2"
+  "200ugmAb3": "mAb3"
+  "20230210-mAb4": "mAb4"
+  "20230707-mAb5": "mAb5"
+  "20231203-mAb6": "mAb6"
+  "20231221-mAb7": "mAb7"
+  "20250415-mAb8": "mAb8"
+
+# Default processing parameters
+default_parameters:
+  quality_cutoff: 50
+  kmer: 7
+  contigs_alps: 20
+
+# Default file paths and patterns (relative to project root)
+default_paths:
+  alps_jar_path: "ALPS.jar"  # Path to ALPS.jar file
+  confidence_threshold_file: "data/Tool_Confidence_Threshold.csv"  # CSV file with confidence thresholds
+  
+# Base directory paths (modify these according to your data organization)
+base_paths:
+  denovo_results_base: "denovo"  # Base directory for de novo sequencing results
+  mgf_files_base: "monoclonal_antibody"  # Base directory for MGF files
+  output_base: "ALPS_Assembly"  # Base directory for output results
+
+# Tool-specific input file patterns
+tool_file_patterns:
+  CasanovoV1:
+    input_file: "casanovo_denovo.mztab"
+    requires_mgf: true
+    input_subdir: ""
+  CasanovoV2:
+    input_file: "denovo.mztab"
+    requires_mgf: true
+    input_subdir: ""
+  PepNet:
+    input_file: "denovo.tsv"
+    requires_mgf: false
+    input_subdir: ""
+  pNovo3:
+    input_file: "results.res"
+    requires_mgf: false
+    input_subdir: "HCD"
+  pi-HelixNovo:
+    input_file: "denovo_denovo.txt"
+    requires_mgf: false
+    input_subdir: ""
+  pi-PrimeNovo:
+    input_file: "denovo.tsv"
+    requires_mgf: false
+    input_subdir: ""
+  AdaNovo:
+    input_file: "denovo.mztab"
+    requires_mgf: true
+    input_subdir: ""
+  ContraNovo:
+    input_file: "denovo.mztab"
+    requires_mgf: false
+    input_subdir: ""
+  DeepNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: false
+    input_subdir: ""
+  InstaNovo:
+    input_file: "predictions_before_refinement.csv"
+    requires_mgf: true
+    input_subdir: ""
+  PointNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    input_subdir: ""
+  PGPointNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    input_subdir: ""
+  SMSNet:
+    input_file: "spectrum_{sample_name}_HCD_forSMSNet"
+    requires_mgf: true
+    input_subdir: ""
+
+# Tool-specific input directory mapping (denovo result directory names)
+tool_input_dirs:
+  CasanovoV1: "casanovo3"
+  CasanovoV2: "casanovo4"
+  PepNet: "pepnet"
+  pNovo3: "pNovo3"
+  pi-HelixNovo: "pi-helixnovo"
+  pi-PrimeNovo: "pi-primenovo"
+  AdaNovo: "adanovo"
+  ContraNovo: "contranovo"
+  DeepNovo: "deepnovo2"
+  InstaNovo: "instanovo_new"
+  PointNovo: "pointnovo"
+  PGPointNovo: "pgpointnovo"
+  SMSNet: "SMSNet"
+
+# MGF file pattern
+mgf_file_pattern: "spectrum_{sample_name}_HCD.mgf"
+mgf_subdir: "process1"
+
+# Default confidence thresholds (if config file not found)
+default_confidence_thresholds:
+  CasanovoV1: 50
+  CasanovoV2: 50
+  PepNet: 50
+  pNovo3: 50
+  pi-HelixNovo: 50
+  pi-PrimeNovo: 50
+  AdaNovo: 50
+  ContraNovo: 50
+  DeepNovo: 50
+  InstaNovo: 50
+  PointNovo: 50
+  PGPointNovo: 50
+  SMSNet: 50

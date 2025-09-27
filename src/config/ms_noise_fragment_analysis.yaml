@@ -1,0 +1,122 @@
+# MS Noise Fragment Analysis Configuration File
+# This file contains parameters for mass spectrometry noise and fragment analysis
+# 
+# Note: All file paths are relative to the project root directory (/path/to/AbNovoBench)
+# Users should modify these paths according to their specific environment setup
+
+# Analysis parameters
+analysis_parameters:
+  mass_tolerance: 0.02  # Da, tolerance for fragment ion matching
+  use_kdtree: true  # use KDTree for fast nearest neighbor search
+  parallel_processing: true  # enable multiprocessing
+  show_progress: true  # show progress bar during processing
+  
+# Multiprocessing configuration
+multiprocessing_config:
+  num_processes: 4  # number of parallel processes (null for auto-detect)
+  chunk_size: 100  # number of spectra per chunk
+  
+# Progress tracking
+progress_config:
+  show_progress: true
+  progress_unit: "spectrum"
+  progress_desc: "Analyzing spectra"
+  
+# Fragment ion types
+fragment_ion_types:
+  b_ions: true
+  y_ions: true
+  a_ions: false
+  c_ions: false
+  x_ions: false
+  z_ions: false
+  
+# Mass constants for fragment calculation
+mass_constants:
+  proton_mass: 1.00727647
+  water_mass: 18.0105647
+  ammonia_mass: 17.0265491
+  carbon_monoxide_mass: 27.9949146
+  
+  # Amino acid masses (monoisotopic)
+  amino_acid_masses:
+    "A": 71.037114
+    "R": 156.101111
+    "N": 114.042927
+    "D": 115.026943
+    "C": 103.009185  # unmodified cysteine
+    "E": 129.042593
+    "Q": 128.058578
+    "G": 57.021464
+    "H": 137.058912
+    "I": 113.084064
+    "L": 113.084064
+    "K": 128.094963
+    "M": 131.040485
+    "F": 147.068414
+    "P": 97.052764
+    "S": 87.032028
+    "T": 101.047679
+    "W": 186.079313
+    "Y": 163.063329
+    "V": 99.068414
+
+# Modification masses
+modification_masses:
+  "C(+57.02)": 57.021464  # Carbamidomethylation
+  "M(+15.99)": 15.994915  # Oxidation
+  "N(+.98)": 0.984016     # Deamidation
+  "Q(+.98)": 0.984016     # Deamidation
+  "Q(-17.03)": -17.026549 # Pyroglutamic acid
+
+# Noise analysis parameters
+noise_analysis:
+  intensity_threshold: 0.01  # relative intensity threshold
+  noise_percentile: 10  # percentile for noise floor calculation
+  signal_to_noise_ratio: 3.0  # minimum S/N ratio
+  
+# File processing parameters
+file_parameters:
+  convert_arrays: true
+  read_charges: true
+  dtype: "float32"
+  use_index: false
+  
+# Default file paths (relative to project root)
+default_paths:
+  input_base: "data"
+  output_base: "analysis_results"
+  temp_dir: "temp"
+  
+# Output configuration
+output_config:
+  save_intermediate_results: true
+  output_format: "csv"  # csv, tsv, json
+  include_metadata: true
+  precision: 6  # decimal places for mass values
+  
+# File patterns
+file_patterns:
+  mgf_extension: ".mgf"
+  result_suffix: "_fragment_analysis"
+  noise_suffix: "_noise_analysis"
+  
+# KDTree configuration
+kdtree_config:
+  leaf_size: 30  # leaf size for KDTree construction
+  metric: "euclidean"  # distance metric
+  balanced_tree: true  # whether to balance the tree
+
+# Peptide sequence processing
+sequence_processing:
+  parse_modifications: true
+  standardize_modifications: true
+  remove_unknown_modifications: false
+  
+# Quality control filters
+quality_filters:
+  min_peaks: 10  # minimum number of peaks per spectrum
+  min_intensity: 0.001  # minimum peak intensity
+  max_charge: 8  # maximum precursor charge
+  min_mz: 100.0  # minimum m/z value
+  max_mz: 2000.0  # maximum m/z value

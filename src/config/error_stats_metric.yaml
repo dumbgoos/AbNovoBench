@@ -1,0 +1,65 @@
+# Error Stats Metric Configuration File
+# This file contains parameters for error statistics analysis
+# 
+# Note: All file paths are relative to the project root directory (/path/to/AbNovoBench)
+# Users should modify these paths according to their specific environment setup
+
+# Supported tool names for error analysis
+tool_names:
+  - CasanovoV1
+  - CasanovoV2
+  - CasanovoV3
+  - DeepNovo
+  - InstaNovo
+  - InstaNovoPlus
+  - PepNet
+  - pi-HelixNovo
+
+# Error analysis parameters
+analysis_parameters:
+  show_progress: true
+  save_plots: true
+  plot_format: "pdf"  # pdf, png, svg
+  
+# Default file paths (relative to project root)
+default_paths:
+  input_base: "analysis"
+  output_base: "analysis_results"
+  
+# Input file patterns
+input_files:
+  robustness_metric: "robustness_metric.csv"
+  summary_merged: "summary_merged.csv"
+  
+# Output file patterns
+output_files:
+  error_stats_prefix: "error_stats"
+  plot_prefix: "error_analysis"
+  
+# Plot configuration
+plot_config:
+  figure_size: [12, 8]
+  dpi: 300
+  backend: "pdf"  # matplotlib backend
+  font_size: 12
+  
+# Error types to analyze
+error_types:
+  - "substitution"
+  - "insertion" 
+  - "deletion"
+  - "permutation"
+  - "mass_shift"
+  
+# Statistical parameters
+statistics_config:
+  confidence_interval: 0.95
+  significance_level: 0.05
+  min_sample_size: 10
+  
+# Logging configuration
+logging_config:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_to_file: true
+  log_file: "error_analysis.log"

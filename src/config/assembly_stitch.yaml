@@ -1,0 +1,205 @@
+# Assembly Stitch Configuration File
+# This file contains all default parameters for Stitch assembly processing
+# 
+# Note: All file paths are relative to the project root directory (/path/to/AbNovoBench)
+# Users should modify these paths according to their specific environment setup
+
+# Supported tool names
+tool_names:
+  - CasanovoV1
+  - CasanovoV2
+  - pi-HelixNovo
+  - pi-PrimeNovo
+  - AdaNovo
+  - ContraNovo
+  - DeepNovo
+  - InstaNovo
+  - PointNovo
+  - PGPointNovo
+  - SMSNet
+
+# Default antibody name mapping (directory name -> sample name)
+default_names:
+  "50ugmAb1": "mAb1"
+  "100ugmAb2": "mAb2"
+  "200ugmAb3": "mAb3"
+  "20230210-mAb4": "mAb4"
+  "20230707-mAb5": "mAb5"
+  "20231203-mAb6": "mAb6"
+  "20231221-mAb7": "mAb7"
+  "20250415-mAb8": "mAb8"
+
+# Default processing parameters
+default_parameters:
+  quality_cutoff: 90
+  confidence_threshold_suffix: "_90"  # Suffix for confidence threshold file
+
+# Mass constants for peptide calculations
+mass_constants:
+  mass_H: 1.0078
+  mass_N_terminus: 1.0078
+  mass_C_terminus: 17.0027
+  mass_AA:
+    "A": 71.03711
+    "R": 156.10111
+    "N": 114.04293
+    "n": 115.02695
+    "D": 115.02694
+    "C": 160.03065
+    "E": 129.04259
+    "Q": 128.05858
+    "q": 129.0426
+    "G": 57.02146
+    "H": 137.05891
+    "I": 113.08406
+    "L": 113.08406
+    "K": 128.09496
+    "M": 131.04049
+    "m": 147.0354
+    "F": 147.06841
+    "P": 97.05276
+    "S": 87.03203
+    "T": 101.04768
+    "W": 186.07931
+    "Y": 163.06333
+    "V": 99.06841
+    "d": 25.980265
+    "e": -17.026549
+    "f": 43.005814
+    "g": 42.010565
+    "p": 111.032
+
+# Default file paths and patterns (relative to project root)
+default_paths:
+  stitch_binary: "stitch-v1.5.0-linux/stitch.bin"
+  confidence_threshold_file: "data/Tool_Confidence_Threshold_90.csv"
+  batchfiles_dir: "stitch-v1.5.0-linux/batchfiles"
+  
+# Base directory paths (modify these according to your data organization)
+base_paths:
+  denovo_results_base: "denovo"
+  mgf_files_base: "monoclonal_antibody"
+  output_base: "Stitch_Assembly"
+
+# Tool-specific input file patterns
+tool_file_patterns:
+  CasanovoV1:
+    input_file: "casanovo_denovo.mztab"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  CasanovoV2:
+    input_file: "denovo.mztab"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  pi-HelixNovo:
+    input_file: "denovo_denovo.txt"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  pi-PrimeNovo:
+    input_file: "denovo.tsv"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  AdaNovo:
+    input_file: "denovo.mztab"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  ContraNovo:
+    input_file: "denovo.mztab"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  DeepNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  InstaNovo:
+    input_file: "predictions_before_refinement.csv"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  PointNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  PGPointNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+  SMSNet:
+    input_file: "spectrum_{sample_name}_HCD_forSMSNet"
+    requires_mgf: true
+    requires_batchfile: true
+    input_subdir: ""
+
+# Tool-specific input directory mapping (denovo result directory names)
+tool_input_dirs:
+  CasanovoV1: "casanovo3"
+  CasanovoV2: "casanovo4"
+  pi-HelixNovo: "pi-helixnovo"
+  pi-PrimeNovo: "pi-primenovo"
+  AdaNovo: "adanovo"
+  ContraNovo: "contranovo"
+  DeepNovo: "deepnovo2"
+  InstaNovo: "instanovo_new"
+  PointNovo: "pointnovo"
+  PGPointNovo: "pgpointnovo"
+  SMSNet: "SMSNet"
+
+# MGF file pattern
+mgf_file_pattern: "spectrum_{sample_name}_HCD.mgf"
+mgf_subdir: "process1"
+
+# Batchfile pattern
+batchfile_pattern: "{mab}.txt"
+
+# Filter for excluding certain directories
+excluded_mab_patterns:
+  - "131ab_EThcd"
+  - ".yaml"
+  - "Herceptin"
+  - "anti-FLAG-M2"
+
+# Default confidence thresholds (if config file not found)
+default_confidence_thresholds:
+  CasanovoV1: 90
+  CasanovoV2: 90
+  pi-HelixNovo: 90
+  pi-PrimeNovo: 90
+  AdaNovo: 90
+  ContraNovo: 90
+  DeepNovo: 90
+  InstaNovo: 90
+  PointNovo: 90
+  PGPointNovo: 90
+  SMSNet: 90
+
+# Stitch CSV output column mapping
+stitch_columns:
+  - "Fraction"
+  - "Source File"
+  - "Feature"
+  - "Peptide"
+  - "Scan"
+  - "Tag Length"
+  - "Denovo Score"
+  - "ALC (%)"
+  - "length"
+  - "m/z"
+  - "z"
+  - "RT"
+  - "Predict RT"
+  - "Area"
+  - "Mass"
+  - "ppm"
+  - "PTM"
+  - "local confidence (%)"
+  - "tag (>=0%)"
+  - "mode"

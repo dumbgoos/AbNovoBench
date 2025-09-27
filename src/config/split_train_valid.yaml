@@ -1,0 +1,47 @@
+# Split Train Valid Configuration File
+# This file contains parameters for splitting MGF files into training and validation sets
+# 
+# Note: All file paths are relative to the project root directory (/path/to/AbNovoBench)
+# Users should modify these paths according to their specific environment setup
+
+# Split parameters
+split_parameters:
+  validation_ratio: 0.1  # 10% for validation, 90% for training
+  random_seed: 42  # for reproducible splits
+  ensure_unique_sequences: true  # ensure validation sequences don't overlap with training
+  
+# File processing parameters
+file_parameters:
+  convert_arrays: true
+  read_charges: false
+  dtype: "float32"
+  use_index: false
+  
+# Default file paths (relative to project root)
+default_paths:
+  input_base: "data"
+  output_base: "data/split"
+  
+# File patterns
+file_patterns:
+  input_extension: ".mgf"
+  train_suffix: "_train.mgf"
+  valid_suffix: "_valid.mgf"
+  
+# Progress tracking
+progress_config:
+  show_progress: true
+  progress_unit: "spectrum"
+  progress_desc: "Processing spectra"
+
+# Sequence filtering
+sequence_filters:
+  min_length: 6  # minimum peptide length
+  max_length: 50  # maximum peptide length
+  exclude_modifications: false  # whether to exclude modified peptides
+  
+# Output format
+output_format:
+  preserve_metadata: true
+  preserve_charges: true
+  precision: 4  # decimal places for m/z values

@@ -1,0 +1,203 @@
+# Denovo Process Configuration File
+# This file contains all default parameters for de novo sequencing result processing
+# 
+# Note: All file paths are relative to the project root directory (/path/to/AbNovoBench)
+# Users should modify these paths according to their specific environment setup
+
+# Supported tool names for processing
+tool_names:
+  - AdaNovo
+  - CasanovoV1
+  - CasanovoV2
+  - ContraNovo
+  - DeepNovo
+  - InstaNovo
+  - PepNet
+  - PGPointNovo
+  - pi-HelixNovo
+  - pi-PrimeNovo
+  - pNovo3
+  - PointNovo
+  - SMSNet
+
+# Default antibody name mapping (directory name -> sample name)
+default_names:
+  "50ugmAb1": "mAb1"
+  "100ugmAb2": "mAb2"
+  "200ugmAb3": "mAb3"
+  "20230210-mAb4": "mAb4"
+  "20230707-mAb5": "mAb5"
+  "20231203-mAb6": "mAb6"
+  "20231221-mAb7": "mAb7"
+  "20250415-mAb8": "mAb8"
+
+# Processing parameters
+processing_parameters:
+  match_mass_tol: 0.1  # mass tolerance in Da
+  prefix_mass_tol: 0.5  # prefix mass tolerance in Da
+  
+# Vocabulary configuration
+vocabulary:
+  start_vocab: ["_PAD", "_GO", "_EOS"]
+  amino_acids: 
+    - "A"
+    - "R"
+    - "N"
+    - "n"
+    - "D"
+    - "C"
+    - "E"
+    - "Q"
+    - "q"
+    - "G"
+    - "H"
+    - "I"
+    - "L"
+    - "K"
+    - "M"
+    - "m"
+    - "F"
+    - "P"
+    - "S"
+    - "T"
+    - "W"
+    - "Y"
+    - "V"
+    - "d"
+    - "e"
+    - "f"
+    - "g"
+    - "p"
+  
+  # Vocabulary IDs
+  pad_id: 0
+  go_id: 1
+  eos_id: 2
+
+# Mass constants
+mass_constants:
+  mass_H: 1.0078
+  mass_H2O: 18.0106
+  mass_NH3: 17.0265
+  mass_N_terminus: 1.0078
+  mass_C_terminus: 17.0027
+  mass_CO: 27.9949
+  mass_Phosphorylation: 79.96633
+  
+  # Amino acid masses
+  mass_AA:
+    "_PAD": 0.0
+    "_GO": 0.0078  # mass_N_terminus - mass_H
+    "_EOS": 18.0105  # mass_C_terminus + mass_H
+    "A": 71.03711
+    "R": 156.10111
+    "N": 114.04293
+    "n": 115.02695
+    "D": 115.02694
+    "C": 160.03065
+    "E": 129.04259
+    "Q": 128.05858
+    "q": 129.0426
+    "G": 57.02146
+    "H": 137.05891
+    "I": 113.08406
+    "L": 113.08406
+    "K": 128.09496
+    "M": 131.04049
+    "m": 147.0354
+    "F": 147.06841
+    "P": 97.05276
+    "S": 87.03203
+    "T": 101.04768
+    "W": 186.07931
+    "Y": 163.06333
+    "V": 99.06841
+    "d": 25.980265
+    "e": -17.026549
+    "f": 43.005814
+    "g": 42.010565
+    "p": 111.032
+
+# Default file paths (relative to project root)
+default_paths:
+  output_base: "processed_results"
+  
+# Base directory paths
+base_paths:
+  denovo_results_base: "denovo"
+  mgf_files_base: "monoclonal_antibody"
+  
+# Tool-specific input file patterns
+tool_file_patterns:
+  CasanovoV1:
+    input_file: "casanovo_denovo.mztab"
+    requires_mgf: true
+    input_subdir: ""
+  CasanovoV2:
+    input_file: "denovo.mztab"
+    requires_mgf: true
+    input_subdir: ""
+  PepNet:
+    input_file: "denovo.tsv"
+    requires_mgf: false
+    input_subdir: ""
+  pNovo3:
+    input_file: "results.res"
+    requires_mgf: false
+    input_subdir: "HCD"
+  pi-HelixNovo:
+    input_file: "denovo_denovo.txt"
+    requires_mgf: false
+    input_subdir: ""
+  pi-PrimeNovo:
+    input_file: "denovo.tsv"
+    requires_mgf: false
+    input_subdir: ""
+  AdaNovo:
+    input_file: "denovo.mztab"
+    requires_mgf: true
+    input_subdir: ""
+  ContraNovo:
+    input_file: "denovo.mztab"
+    requires_mgf: false
+    input_subdir: ""
+  DeepNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    input_subdir: ""
+  InstaNovo:
+    input_file: "predictions_before_refinement.csv"
+    requires_mgf: true
+    input_subdir: ""
+  PointNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    input_subdir: ""
+  PGPointNovo:
+    input_file: "{mab}.deepnovo_denovo"
+    requires_mgf: true
+    input_subdir: ""
+  SMSNet:
+    input_file: "spectrum_{sample_name}_HCD_forSMSNet"
+    requires_mgf: true
+    input_subdir: ""
+
+# Tool-specific input directory mapping
+tool_input_dirs:
+  CasanovoV1: "casanovo3"
+  CasanovoV2: "casanovo4"
+  PepNet: "pepnet"
+  pNovo3: "pNovo3"
+  pi-HelixNovo: "pi-helixnovo"
+  pi-PrimeNovo: "pi-primenovo"
+  AdaNovo: "adanovo"
+  ContraNovo: "contranovo"
+  DeepNovo: "deepnovo2"
+  InstaNovo: "instanovo_new"
+  PointNovo: "pointnovo"
+  PGPointNovo: "pgpointnovo"
+  SMSNet: "SMSNet"
+
+# MGF file pattern
+mgf_file_pattern: "spectrum_{sample_name}_HCD.mgf"
+mgf_subdir: "process1"
