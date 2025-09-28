@@ -60,7 +60,7 @@
    ```
 
 3. Download external tools:
-   - **ALPS.jar**: Contact tool authors or obtain from their repository
+   - **ALPS.jar**: Download from [Google Drive](https://drive.google.com/drive/folders/1x-g9ULR3evq_aFC9lHlNg4Rr86W3YM37?usp=sharing)
    - **Stitch**: Download from [https://github.com/snijderlab/stitch](https://github.com/snijderlab/stitch)
 
 ---
