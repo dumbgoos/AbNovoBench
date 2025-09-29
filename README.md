@@ -29,7 +29,7 @@
   - Dataset exploration and visualization tools
   
 - **🤗 Pre-trained Models**: [https://huggingface.co/LLMasterLL/AbNovobench](https://huggingface.co/LLMasterLL/AbNovobench)
-  - Collection of 13 state-of-the-art de novo sequencing models
+  - Collection of 13 retrained de novo sequencing models based on AbNovoBench
   - Ready-to-use pre-trained checkpoints
   - Model cards with detailed performance metrics
 
@@ -38,7 +38,7 @@
 ## 🚀 **Quick Start**
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.10
 - Java Runtime Environment (for ALPS.jar)
 - Required Python packages (see Installation)
 
